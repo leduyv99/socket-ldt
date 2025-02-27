@@ -9,13 +9,15 @@ export class MainRoom extends Room<MainRoomState> {
 
   onJoin (client: Client) {
     console.log(client.sessionId, "joined!");
-    const randomPos = Math.floor(Math.random() * 10)
-    this.state.players.set(client.sessionId, { x: randomPos, y : randomPos })
+    const player = new Player()
+    player.x = Math.floor(Math.random() * 100)
+    player.y = Math.floor(Math.random() * 100)
+    this.state.players.set(client.sessionId, player)
   }
 
   onLeave (client: Client, consented: boolean) {
-    this.state.players.delete(client.sessionId)
     console.log(client.sessionId, "left!", consented);
+    this.state.players.delete(client.sessionId)
   }
 
   onDispose() {

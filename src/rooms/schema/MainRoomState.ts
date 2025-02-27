@@ -1,10 +1,10 @@
-import { Schema } from "@colyseus/schema";
+import { MapSchema, Schema, type } from "@colyseus/schema";
 
-export interface Player {
-  x: number
-  y: number
+export class Player extends Schema {
+  @type("number") x: number;
+  @type("number") y: number;
 }
 
 export class MainRoomState extends Schema {
-  players: Map<string, Player>
+  @type({ map: Player }) players = new MapSchema<Player>();
 }

@@ -8,7 +8,7 @@ export default config({
 		gameServer.define(ROOMS.main, MainRoom);
 	},
 	initializeExpress: (app) => {
-		app.use(cors)
+		app.use(cors())
 		app.get("/", (req, res) => res.send("Server running."))
 	},
 	beforeListen: () => {
