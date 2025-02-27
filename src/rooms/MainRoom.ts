@@ -1,5 +1,11 @@
 import { Room, Client } from "@colyseus/core";
 import { MainRoomState, Player } from "./schema/MainRoomState";
+import { ACTIONS } from "./constant";
+
+interface PositionPayload {
+  x: number
+  y: number
+}
 
 export class MainRoom extends Room<MainRoomState> {
   state = new MainRoomState();
@@ -13,6 +19,17 @@ export class MainRoom extends Room<MainRoomState> {
     player.x = Math.floor(Math.random() * 100)
     player.y = Math.floor(Math.random() * 100)
     this.state.players.set(client.sessionId, player)
+
+    this.onMessage(ACTIONS.move, (client, payload: PositionPayload) => {
+      const { x, y } = payload
+      const _player = this.state.players.get(client.sessionId)
+      _player.x = x
+      _player.y = y
+      this.broadcast(ACTIONS.move, {
+        sessionId: client.sessionId,
+        ...payload
+      }, { except: client })
+    })
   }
 
   onLeave (client: Client, consented: boolean) {

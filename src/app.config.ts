@@ -13,5 +13,8 @@ export default config({
 	},
 	beforeListen: () => {
 
+	},
+	options: {
+		devMode: true
 	}
 });
