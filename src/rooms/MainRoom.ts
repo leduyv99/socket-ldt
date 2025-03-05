@@ -5,6 +5,7 @@ import { ACTIONS } from "./constant";
 interface PositionPayload {
   x: number
   y: number
+  animation: string
 }
 
 export class MainRoom extends Room<MainRoomState> {
@@ -16,15 +17,17 @@ export class MainRoom extends Room<MainRoomState> {
   onJoin (client: Client) {
     console.log(client.sessionId, "joined!");
     const player = new Player()
-    player.x = Math.floor(Math.random() * 100)
-    player.y = Math.floor(Math.random() * 100)
+    player.x = Math.floor(Math.random() * 100 + 20)
+    player.y = Math.floor(Math.random() * 100 + 20)
     this.state.players.set(client.sessionId, player)
 
     this.onMessage(ACTIONS.move, (client, payload: PositionPayload) => {
-      const { x, y } = payload
       const _player = this.state.players.get(client.sessionId)
-      _player.x = x
-      _player.y = y
+      _player.x = payload.x
+      _player.y = payload.y
+      _player.animation = payload.animation
+      this.state.players.set(client.sessionId, _player)
+
       this.broadcast(ACTIONS.move, {
         sessionId: client.sessionId,
         ...payload
