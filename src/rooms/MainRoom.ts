@@ -14,29 +14,41 @@ interface PositionPayload {
 export class MainRoom extends Room<MainRoomState> {
   state = new MainRoomState();
 
-  onCreate () {
+  onCreate() {
   }
 
-  onJoin (client: Client) {
+  onJoin(client: Client) {
     console.log(client.sessionId, "joined!");
     const player = new Player()
-    player.x = Math.floor(Math.random() * 100)
-    player.y = Math.floor(Math.random() * 100)
+    player.x = Math.floor(Math.random() * 100 + 20)
+    player.y = Math.floor(Math.random() * 100 + 20)
     this.state.players.set(client.sessionId, player)
+    console.log(this.state.players)
 
     this.onMessage(ACTIONS.move, (client, payload: PositionPayload) => {
-      const { x, y } = payload
       const _player = this.state.players.get(client.sessionId)
-      _player.x = x
-      _player.y = y
+      _player.x = payload.x
+      _player.y = payload.y
+      _player.animation = payload.animation
+      this.state.players.set(client.sessionId, _player)
+
       this.broadcast(ACTIONS.move, {
         sessionId: client.sessionId,
         ...payload
       }, { except: client })
     })
+
+    this.onMessage(ACTIONS.updateAsset, (client, indexAsset) => {
+      const _player = this.state.players.get(client.sessionId)
+      _player.i = indexAsset
+      this.broadcast(ACTIONS.updateAsset, {
+        sessionId: client.sessionId,
+        indexAsset
+      }, { })
+    })
   }
 
-  onLeave (client: Client, consented: boolean) {
+  onLeave(client: Client, consented: boolean) {
     console.log(client.sessionId, "left!", consented);
     this.state.players.delete(client.sessionId)
   }
