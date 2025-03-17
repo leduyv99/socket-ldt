@@ -2,9 +2,13 @@ import { Room, Client } from "@colyseus/core";
 import { MainRoomState, Player } from "./schema/MainRoomState";
 import { ACTIONS } from "./constant";
 
+type PlayerDirection = 'front' | 'left' | 'right' | 'back'
+type PlayerAnimation = 'idle' | 'move'
 interface PositionPayload {
   x: number
   y: number
+  animation: PlayerAnimation
+  direction: PlayerDirection
 }
 
 export class MainRoom extends Room<MainRoomState> {
