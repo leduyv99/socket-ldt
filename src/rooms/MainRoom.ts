@@ -23,7 +23,6 @@ export class MainRoom extends Room<MainRoomState> {
     player.x = Math.floor(Math.random() * 100 + 20)
     player.y = Math.floor(Math.random() * 100 + 20)
     this.state.players.set(client.sessionId, player)
-    console.log(this.state.players)
 
     this.onMessage(ACTIONS.move, (client, payload: PositionPayload) => {
       const _player = this.state.players.get(client.sessionId)
